@@ -75,34 +75,22 @@ class _SessionsScreenState extends State<EventsScreen> {
                       : 'From ${DateFormat('EEE, MMM dd, yyyy').format(range!.start)} - ${DateFormat('EEE, MMM dd, yyyy').format(range!.end)}',
                 ),
                 TitleCard(title: 'Events'),
-                state.events.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 200),
-                          child: Text(
-                            'No Events'.toUpperCase(),
-                            style:
-                                kBodyTitleTextStyle.copyWith(color: kGreyColor),
-                          ),
-                        ),
-                      )
-                    : ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) => Divider(
-                          color: kGreyColor.withOpacity(.2),
-                          height: 20,
-                          endIndent: 20,
-                          indent: 20,
-                        ),
-                        itemBuilder: (_, i) =>
-                            state.appState == AppState.loading
-                                ? LoadingShimmer()
-                                : EventCard(event: state.events[i]),
-                        itemCount: state.appState == AppState.loading
-                            ? 6
-                            : state.events.length,
-                        shrinkWrap: true,
-                      ),
+                ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) => Divider(
+                    color: kGreyColor.withOpacity(.2),
+                    height: 20,
+                    endIndent: 20,
+                    indent: 20,
+                  ),
+                  itemBuilder: (_, i) => state.appState == AppState.loading
+                      ? LoadingShimmer()
+                      : EventCard(event: state.events[i]),
+                  itemCount: state.appState == AppState.loading
+                      ? 6
+                      : state.events.length,
+                  shrinkWrap: true,
+                ),
               ],
             ),
           ),

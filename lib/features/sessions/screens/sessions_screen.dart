@@ -117,38 +117,25 @@ class _SessionsScreenState extends State<SessionsScreen> {
                           : 'From ${DateFormat('EEE, MMM dd, yyyy').format(range!.start)} - ${DateFormat('EEE, MMM dd, yyyy').format(range!.end)}',
                     ),
                     TitleCard(title: 'Sessions'),
-                    state.sessions.isEmpty
-                        ? Center(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 200),
-                              child: Text(
-                                'No Sessions'.toUpperCase(),
-                                style: kBodyTitleTextStyle.copyWith(
-                                    color: kGreyColor),
-                              ),
-                            ),
-                          )
-                        : ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            separatorBuilder: (context, index) => Divider(
-                              color: kGreyColor.withOpacity(.2),
-                              height: 20,
-                              endIndent: 20,
-                              indent: 20,
-                            ),
-                            itemBuilder: (_, i) =>
-                                state.appState == AppState.loading
-                                    ? LoadingShimmer(
-                                        height: 80,
-                                        radius: 8,
-                                      )
-                                    : SessionCard(session: state.sessions[i]),
-                            itemCount: state.appState == AppState.loading
-                                ? 6
-                                : state.sessions.length,
-                            shrinkWrap: true,
-                          ),
+                    ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) => Divider(
+                        color: kGreyColor.withOpacity(.2),
+                        height: 20,
+                        endIndent: 20,
+                        indent: 20,
+                      ),
+                      itemBuilder: (_, i) => state.appState == AppState.loading
+                          ? LoadingShimmer(
+                              height: 80,
+                              radius: 8,
+                            )
+                          : SessionCard(session: state.sessions[i]),
+                      itemCount: state.appState == AppState.loading
+                          ? 6
+                          : state.sessions.length,
+                      shrinkWrap: true,
+                    ),
                   ],
                 ),
               ),
