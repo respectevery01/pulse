@@ -19,13 +19,13 @@ Session _$SessionFromJson(Map<String, dynamic> json) => Session(
       os: json['os'] as String,
       region: json['region'] as String?,
       screen: json['screen'] as String,
-      visits: (json['visits'] as num).toInt(),
-      views: (json['views'] as num).toInt(),
+      visits: const _FlexibleInt().fromJson(json['visits']),
+      views: const _FlexibleInt().fromJson(json['views']),
       firstAt: DateTime.parse(json['firstAt'] as String),
       lastAt: DateTime.parse(json['lastAt'] as String),
       language: json['language'] as String,
-      events: (json['events'] as num?)?.toInt(),
-      totaltime: (json['totaltime'] as num?)?.toInt(),
+      events: const _FlexibleInt().fromJson(json['events']),
+      totaltime: const _FlexibleInt().fromJson(json['totaltime']),
     );
 
 Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
@@ -39,11 +39,19 @@ Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
       'language': instance.language,
       'region': instance.region,
       'city': instance.city,
-      'visits': instance.visits,
-      'views': instance.views,
-      'totaltime': instance.totaltime,
-      'events': instance.events,
+      'visits': const _FlexibleInt().toJson(instance.visits),
+      'views': const _FlexibleInt().toJson(instance.views),
+      'totaltime': _$JsonConverterToJson<dynamic, int>(
+          instance.totaltime, const _FlexibleInt().toJson),
+      'events': _$JsonConverterToJson<dynamic, int>(
+          instance.events, const _FlexibleInt().toJson),
       'createdAt': instance.createdAt?.toIso8601String(),
       'firstAt': instance.firstAt.toIso8601String(),
       'lastAt': instance.lastAt.toIso8601String(),
     };
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);

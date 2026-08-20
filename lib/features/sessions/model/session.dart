@@ -1,6 +1,23 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'session.g.dart';
 
+/// Umami's session detail endpoint returns views/events/totaltime as
+/// strings ('1'), while the list endpoint returns ints. Accept both.
+class _FlexibleInt implements JsonConverter<int, dynamic> {
+  const _FlexibleInt();
+
+  @override
+  int fromJson(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  @override
+  dynamic toJson(int value) => value;
+}
+
 @JsonSerializable()
 class Session {
   String id;
@@ -13,9 +30,13 @@ class Session {
   String language;
   String? region;
   String? city;
+  @_FlexibleInt()
   int visits;
+  @_FlexibleInt()
   int views;
+  @_FlexibleInt()
   int? totaltime;
+  @_FlexibleInt()
   int? events;
   DateTime? createdAt;
   DateTime firstAt;
