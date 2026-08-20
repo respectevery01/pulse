@@ -6,20 +6,17 @@ class Event {
   String? id;
   String? sessionId;
   DateTime createdAt;
-
-  /// Null for pageviews; set only for custom events (Umami >= 3 mixes
-  /// pageviews and events in the /events response).
-  String? eventName;
+  String eventName;
   String urlPath;
-  String? referrerDomain;
+  String referrerDomain;
 
   Event({
     required this.createdAt,
     this.id,
     this.sessionId,
-    this.eventName,
+    required this.eventName,
     required this.urlPath,
-    this.referrerDomain,
+    required this.referrerDomain,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);

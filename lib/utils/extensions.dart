@@ -10,6 +10,8 @@ extension StringExtensions on String {
         return Icons.desktop_windows_rounded;
       case 'mobile':
         return Icons.phone_android_rounded;
+      case 'laptop ':
+        return Icons.laptop_mac_rounded;
       default:
         return Icons.phone_android_rounded;
     }
@@ -35,8 +37,11 @@ extension StringExtensions on String {
     }
   }
 
+
   String get toBrowserIcon {
-    if (contains('chrome')) {
+    if (contains('edge')) {
+      return Brands.microsoft_edge;
+    } else if (contains('chrome')) {
       return Brands.chrome;
     } else if (contains('ios') || contains('safari')) {
       return Brands.safari;

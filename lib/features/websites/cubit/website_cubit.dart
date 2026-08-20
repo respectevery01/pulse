@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pulse/features/websites/models/team.dart';
 import 'package:pulse/utils/utils.dart';
 
 import '../models/website.dart';
@@ -13,68 +12,26 @@ class WebsiteCubit extends Cubit<WebsiteState> {
   WebsiteCubit() : super(WebsiteInitial());
 
   Future<void> getWebsites() async {
-    emit(WebsiteLoading(
-        websites: state.websites,
-        teams: state.teams,
-        selectedTeam: state.selectedTeam));
+    emit(WebsiteLoading(websites: state.websites));
     try {
-      final repo = WebsiteRepo();
-      List<Team> teams = [];
-      try {
-        teams = await repo.getTeams();
-      } catch (e) {
-        logger.w('Teams unavailable: $e');
-      }
-      var websites = await repo.getWebsites();
-      emit(WebsiteLoaded(
-          websites: websites,
-          teams: teams,
-          selectedTeam:
-              _validSelection(state.selectedTeam, teams) ?? 'All'));
+      var websites = await WebsiteRepo().getWebsites();
+      emit(WebsiteLoaded(websites: websites));
     } catch (e) {
-      emit(WebsiteError(
-          message: e.toString(),
-          websites: state.websites,
-          teams: state.teams,
-          selectedTeam: state.selectedTeam));
+      emit(WebsiteError(message: e.toString()));
     }
-  }
-
-  /// Keeps the current selection if it still exists after a refresh.
-  String? _validSelection(String selected, List<Team> teams) {
-    if (selected == 'All' || selected == 'Personal') return selected;
-    return teams.any((t) => t.name == selected) ? selected : null;
-  }
-
-  void selectTeam(String? team) {
-    if (team == null) return;
-    emit(WebsiteLoaded(
-        websites: state.websites,
-        teams: state.teams,
-        selectedTeam: team));
   }
 
   Future<void> addWebsite(
       {required String name, required String domain, context}) async {
-    emit(WebsiteAdding(
-        websites: state.websites,
-        teams: state.teams,
-        selectedTeam: state.selectedTeam));
+    emit(WebsiteAdding(websites: state.websites));
     try {
       await WebsiteRepo().addWebsite(domain: domain, name: name);
       Toast.showToast(message: '$name added successfully', context: context);
-      emit(WebsiteLoaded(
-          websites: state.websites,
-          teams: state.teams,
-          selectedTeam: state.selectedTeam));
+      emit(WebsiteLoaded(websites: state.websites));
       getWebsites();
       Navigator.of(context).pop();
     } catch (e) {
-      emit(WebsiteError(
-          message: e.toString(),
-          websites: state.websites,
-          teams: state.teams,
-          selectedTeam: state.selectedTeam));
+      emit(WebsiteError(message: e.toString(), websites: state.websites));
     }
   }
 
@@ -83,48 +40,28 @@ class WebsiteCubit extends Cubit<WebsiteState> {
       required String domain,
       required String id,
       context}) async {
-    emit(WebsiteAdding(
-        websites: state.websites,
-        teams: state.teams,
-        selectedTeam: state.selectedTeam));
+    emit(WebsiteAdding(websites: state.websites));
     try {
       await WebsiteRepo().editWebsite(domain: domain, name: name, id: id);
       Toast.showToast(message: '$name updated successfully', context: context);
-      emit(WebsiteLoaded(
-          websites: state.websites,
-          teams: state.teams,
-          selectedTeam: state.selectedTeam));
+      emit(WebsiteLoaded(websites: state.websites));
       getWebsites();
     } catch (e) {
-      emit(WebsiteError(
-          message: e.toString(),
-          websites: state.websites,
-          teams: state.teams,
-          selectedTeam: state.selectedTeam));
+      emit(WebsiteError(message: e.toString(), websites: state.websites));
     }
   }
 
   Future<void> deleteWebsite(
       {required String name, required String id, context}) async {
-    emit(WebsiteAdding(
-        websites: state.websites,
-        teams: state.teams,
-        selectedTeam: state.selectedTeam));
+    emit(WebsiteAdding(websites: state.websites));
     try {
       await WebsiteRepo().deleteWebsite(id: id);
       Toast.showToast(message: '$name deleted successfully', context: context);
-      emit(WebsiteLoaded(
-          websites: state.websites,
-          teams: state.teams,
-          selectedTeam: state.selectedTeam));
+      emit(WebsiteLoaded(websites: state.websites));
       getWebsites();
       Navigator.of(context).pop();
     } catch (e) {
-      emit(WebsiteError(
-          message: e.toString(),
-          websites: state.websites,
-          teams: state.teams,
-          selectedTeam: state.selectedTeam));
+      emit(WebsiteError(message: e.toString(), websites: state.websites));
     }
   }
 }
